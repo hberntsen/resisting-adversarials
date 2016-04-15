@@ -1,0 +1,8 @@
+layer {
+    name: "concat_classifications"
+    type: "Concat"
+    bottom: "compare_img_100_classification"
+    bottom: "compare_img_010_classification"
+    bottom: "compare_img_001_classification"
+    top: "concat_classifications"
+}

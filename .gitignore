@@ -1,0 +1,6 @@
+*.caffemodel
+*.solverstate
+*.pyc
+*.h5
+*.p
+results

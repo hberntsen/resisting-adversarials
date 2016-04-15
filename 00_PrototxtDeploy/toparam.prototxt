@@ -1,0 +1,352 @@
+layer {
+    name: "toparam_LABEL_conv1_class"
+    type: "Scale"
+    bottom: "toparam_Dummy3x64x64"
+    bottom: "LABEL"
+    top:"toparam_LABEL_conv1_class"
+    scale_param {
+        axis: 0
+    }
+}
+
+layer {
+    name: "toparam_LABEL_conv1_input"
+    type: "Concat"
+    bottom: "image"
+    bottom: "toparam_LABEL_conv1_class"
+    top: "toparam_LABEL_conv1_input"
+}
+
+layer {
+  name: "toparam_LABEL_conv1"
+  type: "Convolution"
+  bottom: "toparam_LABEL_conv1_input"
+  top: "toparam_LABEL_conv1"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  convolution_param {
+    num_output: 16
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "gaussian"
+      std: 0.01
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "toparam_LABEL_relu1"
+  type: "ReLU"
+  bottom: "toparam_LABEL_conv1"
+  top: "toparam_LABEL_conv1"
+}
+layer {
+  name: "toparam_LABEL_norm1"
+  type: "LRN"
+  bottom: "toparam_LABEL_conv1"
+  top: "toparam_LABEL_norm1"
+  lrn_param {
+    local_size: 5
+    alpha: 0.0001
+    beta: 0.75
+  }
+}
+
+
+layer {
+  name: "toparam_LABEL_pool1"
+  type: "Pooling"
+  bottom: "toparam_LABEL_norm1"
+  top: "toparam_LABEL_pool1"
+  pooling_param {
+    pool: MAX
+    kernel_size: 3
+    stride: 2
+  }
+}
+
+layer {
+  name: "toparam_LABEL_conv2"
+  type: "Convolution"
+  bottom: "toparam_LABEL_pool1"
+  top: "toparam_LABEL_conv2"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    weight_filler {
+      type: "gaussian"
+      std: 0.01
+    }
+    bias_filler {
+      type: "constant"
+      value: 0.1
+    }
+  }
+}
+layer {
+  name: "toparam_LABEL_relu2"
+  type: "ReLU"
+  bottom: "toparam_LABEL_conv2"
+  top: "toparam_LABEL_conv2"
+}
+layer {
+  name: "toparam_LABEL_norm2"
+  type: "LRN"
+  bottom: "toparam_LABEL_conv2"
+  top: "toparam_LABEL_norm2"
+  lrn_param {
+    local_size: 5
+    alpha: 0.0001
+    beta: 0.75
+  }
+}
+layer {
+  name: "toparam_LABEL_pool2"
+  type: "Pooling"
+  bottom: "toparam_LABEL_norm2"
+  top: "toparam_LABEL_pool2"
+  pooling_param {
+    pool: MAX
+    kernel_size: 3
+    stride: 2
+  }
+}
+layer {
+  name: "toparam_LABEL_conv3"
+  type: "Convolution"
+  bottom: "toparam_LABEL_pool2"
+  top: "toparam_LABEL_conv3"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  convolution_param {
+    num_output: 96
+    pad: 1
+    kernel_size: 3
+    weight_filler {
+      type: "gaussian"
+      std: 0.01
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "toparam_LABEL_relu3"
+  type: "ReLU"
+  bottom: "toparam_LABEL_conv3"
+  top: "toparam_LABEL_conv3"
+}
+layer {
+  name: "toparam_LABEL_conv4"
+  type: "Convolution"
+  bottom: "toparam_LABEL_conv3"
+  top: "toparam_LABEL_conv4"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  convolution_param {
+    num_output: 96
+    pad: 1
+    kernel_size: 3
+    weight_filler {
+      type: "gaussian"
+      std: 0.01
+    }
+    bias_filler {
+      type: "constant"
+      value: 0.1
+    }
+  }
+}
+layer {
+  name: "toparam_LABEL_relu4"
+  type: "ReLU"
+  bottom: "toparam_LABEL_conv4"
+  top: "toparam_LABEL_conv4"
+}
+layer {
+  name: "toparam_LABEL_conv5"
+  type: "Convolution"
+  bottom: "toparam_LABEL_conv4"
+  top: "toparam_LABEL_conv5"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+    weight_filler {
+      type: "gaussian"
+      std: 0.01
+    }
+    bias_filler {
+      type: "constant"
+      value: 0.1
+    }
+  }
+}
+
+layer {
+  name: "toparam_LABEL_relu5"
+  type: "ReLU"
+  bottom: "toparam_LABEL_conv5"
+  top: "toparam_LABEL_conv5"
+}
+
+layer {
+  name: "toparam_LABEL_pool5"
+  type: "Pooling"
+  bottom: "toparam_LABEL_conv5"
+  top: "toparam_LABEL_pool5"
+  pooling_param {
+    pool: MAX
+    kernel_size: 3
+    stride: 2
+  }
+}
+
+layer {
+  name: "toparam_LABEL_fc6"
+  type: "InnerProduct"
+  bottom: "toparam_LABEL_pool5"
+  top: "toparam_LABEL_fc6"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  inner_product_param {
+    num_output: 1024
+    weight_filler {
+      type: "gaussian"
+      std: 0.005
+    }
+    bias_filler {
+      type: "constant"
+      value: 0.1
+    }
+  }
+}
+layer {
+  name: "toparam_LABEL_relu6"
+  type: "ReLU"
+  bottom: "toparam_LABEL_fc6"
+  top: "toparam_LABEL_fc6"
+}
+layer {
+  name: "toparam_LABEL_drop6"
+  type: "Dropout"
+  bottom: "toparam_LABEL_fc6"
+  top: "toparam_LABEL_fc6"
+  dropout_param {
+    dropout_ratio: 0.5
+  }
+}
+layer {
+  name: "toparam_LABEL_fc7"
+  type: "InnerProduct"
+  bottom: "toparam_LABEL_fc6"
+  top: "toparam_LABEL_fc7"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  inner_product_param {
+    num_output: 1024
+    weight_filler {
+      type: "gaussian"
+      std: 0.005
+    }
+    bias_filler {
+      type: "constant"
+      value: 0.1
+    }
+  }
+}
+layer {
+  name: "toparam_LABEL_relu7"
+  type: "ReLU"
+  bottom: "toparam_LABEL_fc7"
+  top: "toparam_LABEL_fc7"
+}
+layer {
+  name: "toparam_LABEL_drop7"
+  type: "Dropout"
+  bottom: "toparam_LABEL_fc7"
+  top: "toparam_LABEL_fc7"
+  dropout_param {
+    dropout_ratio: 0.5
+  }
+}
+
+layer {
+  name: "toparam_LABEL_fc8"
+  type: "InnerProduct"
+  bottom: "toparam_LABEL_fc7"
+  top: "LABEL_params"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  inner_product_param {
+    num_output: 3
+    weight_filler {
+      type: "gaussian"
+      std: 0.01
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+

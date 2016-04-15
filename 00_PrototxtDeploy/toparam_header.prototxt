@@ -1,0 +1,28 @@
+
+layer{
+    name: "100"
+    type: "Concat"
+    bottom: "Dummy1"
+    bottom: "Dummy0"
+    bottom: "Dummy0"
+    top: "100"
+}
+
+layer{
+    name: "010"
+    type: "Concat"
+    bottom: "Dummy0"
+    bottom: "Dummy1"
+    bottom: "Dummy0"
+    top: "010"
+}
+
+layer{
+    name: "001"
+    type: "Concat"
+    bottom: "Dummy0"
+    bottom: "Dummy0"
+    bottom: "Dummy1"
+    top: "001"
+}
+

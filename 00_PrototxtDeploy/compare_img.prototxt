@@ -1,0 +1,225 @@
+layer{
+    name: "compare_img_LABEL_concat_input"
+    type: "Concat"
+    bottom: "image"
+    bottom: "fromparam_LABEL_final_image"
+    bottom: "fromparam_LABEL_deconv8_segm"
+    top: "compare_img_LABEL_input"
+}
+
+layer {
+  name: "compare_img_LABEL_conv1"
+  type: "Convolution"
+  bottom: "compare_img_LABEL_input"
+  top: "compare_img_LABEL_conv1"
+  param {
+    name: 'compare_img_conv1_weights'
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    name: 'compare_img_conv1_biases'
+    lr_mult: 2
+    decay_mult: 0
+  }
+  convolution_param {
+    num_output: 64
+    kernel_size: 10
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+    bias_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "compare_img_LABEL_relu1"
+  type: "ReLU"
+  bottom: "compare_img_LABEL_conv1"
+  top: "compare_img_LABEL_conv1"
+}
+
+layer {
+  name: "compare_img_LABEL_conv2"
+  type: "Convolution"
+  bottom: "compare_img_LABEL_conv1"
+  top: "compare_img_LABEL_conv2"
+  param {
+    name: 'compare_img_conv2_weights'
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    name: 'compare_img_conv2_biases'
+    lr_mult: 2
+    decay_mult: 0
+  }
+  convolution_param {
+    num_output: 64
+    kernel_size: 1
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+    bias_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "compare_img_LABEL_relu2"
+  type: "ReLU"
+  bottom: "compare_img_LABEL_conv2"
+  top: "compare_img_LABEL_conv2"
+}
+
+layer {
+  name: "compare_img_LABEL_conv3"
+  type: "Convolution"
+  bottom: "compare_img_LABEL_conv2"
+  top: "compare_img_LABEL_conv3"
+  param {
+    name: 'compare_img_conv3_weights'
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    name: 'compare_img_conv3_biases'
+    lr_mult: 2
+    decay_mult: 0
+  }
+  convolution_param {
+    num_output: 64
+    kernel_size: 1
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+    bias_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "compare_img_LABEL_relu3"
+  type: "ReLU"
+  bottom: "compare_img_LABEL_conv3"
+  top: "compare_img_LABEL_conv3"
+}
+
+layer {
+  name: "compare_img_LABEL_conv5"
+  type: "Convolution"
+  bottom: "compare_img_LABEL_conv3"
+  top: "compare_img_LABEL_conv5"
+  param {
+    name: 'compare_img_conv5_weights'
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    name: 'compare_img_conv5_biases'
+    lr_mult: 2
+    decay_mult: 0
+  }
+  convolution_param {
+    num_output: 1
+    kernel_size: 1
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+    bias_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer{
+    name: "compare_img_LABEL_conv5_sigmoid"
+    type: "Sigmoid"
+    bottom: "compare_img_LABEL_conv5"
+    top: "compare_img_LABEL_conv5"
+}
+
+layer {
+  name: "compare_img_LABEL_alpha_factor"
+  type: "Pooling"
+  bottom: "fromparam_LABEL_deconv8_segm"
+  top: "compare_img_LABEL_alpha_factor"
+  pooling_param {
+    pool: AVE
+    kernel_size: 10
+    stride: 1
+  }
+}
+
+layer {
+  name: "compare_img_LABEL_relevant_comparisons"
+  type: "Eltwise"
+  bottom: "compare_img_LABEL_conv5"
+  bottom: "compare_img_LABEL_alpha_factor"
+  top: "compare_img_LABEL_relevant_comparisons"
+  eltwise_param {
+    operation: PROD
+  }
+}
+
+layer {
+    name: "compare_img_LABEL_relevant_comparisons_sum"
+    type: "Reduction"
+    bottom: "compare_img_LABEL_relevant_comparisons"
+    top: "compare_img_LABEL_relevant_comparisons_sum"
+    reduction_param {
+        axis: 1
+    }
+}
+
+layer {
+    name: "compare_img_LABEL_alpha_factor_sum"
+    type: "Reduction"
+    bottom: "compare_img_LABEL_alpha_factor"
+    top: "compare_img_LABEL_alpha_factor_sum"
+    reduction_param {
+        axis: 1
+    }
+}
+
+layer {
+    name: "compare_img_LABEL_alpha_factor_sum_power-1"
+    type: "Power"
+    bottom: "compare_img_LABEL_alpha_factor_sum"
+    top: "compare_img_LABEL_alpha_factor_sum_power-1"
+    power_param {
+        power: -1
+    }
+}
+
+layer {
+    name: "compare_img_LABEL_classification"
+    type: "Eltwise"
+    bottom: "compare_img_LABEL_relevant_comparisons_sum"
+    bottom: "compare_img_LABEL_alpha_factor_sum_power-1"
+    top: "compare_img_LABEL_classification_toreshape"
+    eltwise_param {
+        operation: PROD
+    }
+}
+
+layer {
+    name: "compare_img_LABEL_classification_reshape"
+    type: "Reshape"
+    bottom: "compare_img_LABEL_classification_toreshape"
+    top: "compare_img_LABEL_classification"
+    reshape_param {
+        shape: {
+            dim: -1
+            dim: 1
+        }
+    }
+}

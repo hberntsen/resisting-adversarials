@@ -1,0 +1,34 @@
+# =========================
+#  label bits
+# =========================
+
+layer{
+    name: "100_params_and_label"
+    type: "Concat"
+    bottom: "100_params"
+    bottom: "Dummy1"
+    bottom: "Dummy0"
+    bottom: "Dummy0"
+    top: "100_params_and_label"
+}
+
+layer{
+    name: "010_params_and_label"
+    type: "Concat"
+    bottom: "010_params"
+    bottom: "Dummy0"
+    bottom: "Dummy1"
+    bottom: "Dummy0"
+    top: "010_params_and_label"
+}
+
+layer{
+    name: "001_params_and_label"
+    type: "Concat"
+    bottom: "001_params"
+    bottom: "Dummy0"
+    bottom: "Dummy0"
+    bottom: "Dummy1"
+    top: "001_params_and_label"
+}
+

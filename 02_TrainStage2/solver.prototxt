@@ -1,0 +1,20 @@
+train_net: "train.prototxt"
+
+type: "Adam"
+momentum: 0.999
+momentum2: 0.999
+
+lr_policy: "multistep"
+base_lr: 0.0005
+gamma: 0.5
+stepvalue: 250000
+stepvalue: 350000
+stepvalue: 450000
+
+max_iter: 500000
+
+display: 10
+weight_decay: 0.00
+snapshot: 50000
+snapshot_prefix: "stage2"
+random_seed: 12345687

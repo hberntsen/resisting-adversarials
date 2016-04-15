@@ -1,0 +1,212 @@
+name: "compare_net"
+input: "images"
+input_shape {
+    dim: 1
+    dim: 3
+    dim: 10
+    dim: 10
+}
+
+layer {
+  name: "conv1"
+  type: "Convolution"
+  bottom: "images"
+  top: "conv1"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  convolution_param {
+    num_output: 64
+    kernel_size: 10
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+    bias_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "relu1"
+  type: "ReLU"
+  bottom: "conv1"
+  top: "conv1"
+}
+
+layer {
+  name: "conv2"
+  type: "Convolution"
+  bottom: "conv1"
+  top: "conv2"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  convolution_param {
+    num_output: 64
+    kernel_size: 1
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+    bias_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "relu2"
+  type: "ReLU"
+  bottom: "conv2"
+  top: "conv2"
+}
+
+layer {
+  name: "conv3"
+  type: "Convolution"
+  bottom: "conv2"
+  top: "conv3"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  convolution_param {
+    num_output: 64
+    kernel_size: 1
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+    bias_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer {
+  name: "relu3"
+  type: "ReLU"
+  bottom: "conv3"
+  top: "conv3"
+}
+
+layer {
+  name: "conv5"
+  type: "Convolution"
+  bottom: "conv3"
+  top: "conv5"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  convolution_param {
+    num_output: 1
+    kernel_size: 1
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+    bias_filler {
+      type: "xavier"
+    }
+  }
+}
+
+layer{
+    name: "conv5_sigmoid"
+    type: "Sigmoid"
+    bottom: "conv5"
+    top: "conv5"
+}
+
+layer {
+  name: "alpha_factor"
+  type: "Convolution"
+  bottom: "images"
+  top: "alpha_factor"
+  param {
+    lr_mult: 0
+    decay_mult: 0
+  }
+  param {
+    lr_mult: 0
+    decay_mult: 0
+  }
+  convolution_param {
+    num_output: 1
+    kernel_size: 10
+    stride: 1
+  }
+}
+
+layer {
+  name: "relevant_comparisons"
+  type: "Eltwise"
+  bottom: "conv5"
+  bottom: "alpha_factor"
+  top: "relevant_comparisons"
+  eltwise_param {
+    operation: PROD
+  }
+}
+
+layer {
+    name: "relevant_comparisons_sum"
+    type: "Reduction"
+    bottom: "relevant_comparisons"
+    top: "relevant_comparisons_sum"
+    reduction_param {
+        axis: 1
+    }
+}
+
+layer {
+    name: "alpha_factor_sum"
+    type: "Reduction"
+    bottom: "alpha_factor"
+    top: "alpha_factor_sum"
+    reduction_param {
+        axis: 1
+    }
+}
+
+layer {
+    name: "alpha_factor_sum_power-1"
+    type: "Power"
+    bottom: "alpha_factor_sum"
+    top: "alpha_factor_sum_power-1"
+    power_param {
+        power: -1
+    }
+}
+
+layer {
+    name: "classification"
+    type: "Eltwise"
+    bottom: "relevant_comparisons_sum"
+    bottom: "alpha_factor_sum_power-1"
+    top: "classification"
+    eltwise_param {
+        operation: PROD
+    }
+}
