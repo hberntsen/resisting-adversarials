@@ -1,7 +1,7 @@
 ## The Artificial Mind's Eye: *Resisting Adversarials for Convolutional Neural Networks using Internal Projection*
 
 This repository contains the source code to train the network that was used in
-the paper.
+the [paper](http://arxiv.org/abs/1604.04428).
 
 Training the networks
 ---------------------
